@@ -1,0 +1,34 @@
+header{
+    margin-left:30%;
+}
+
+div{
+    margin-left:38%;
+}
+
+input{
+    border-radius: 10px;
+    height: 50px;
+    border-color: orangered;
+}
+
+#result_list{
+    margin-left: -100px;
+}
+
+button{
+    border-radius: 50px;
+    height:50px;
+    background-color: orangered;
+    border-color: transparent;
+}
+
+button:hover{
+    border-color:lightgoldenrodyellow;
+}
+
+input:focus{
+    border-color: orangered;
+}
+
+
