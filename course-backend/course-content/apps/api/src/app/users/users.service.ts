@@ -5,6 +5,8 @@ import {UsersMappers} from "./mappers/users.mappers";
 import {UserDto} from "./dto/user.dto";
 import {RegisterUserDto} from "./dto/register-user.dto";
 import {BadRequestException, Injectable, Logger, NotFoundException} from "@nestjs/common";
+import { compare, hash } from 'bcrypt';
+import {LoginUserDto} from "./dto/login-user.dto";
 
 @Injectable()
 export class UsersService{
@@ -20,7 +22,8 @@ export class UsersService{
   }
 
   async registerUser(dto:RegisterUserDto):Promise<UserDto>{
-    const user= UsersMappers.mapRegisterUsertoModel(dto);
+    const hashedPassword = await hash(dto.password, Math.random());
+    const user= UsersMappers.mapRegisterUsertoModel(dto,hashedPassword);
     try{
       const savedUser= await this.usersModelRepository.save(user);
       return UsersMappers.mapModelToDto(savedUser);
@@ -44,6 +47,16 @@ export class UsersService{
       throw new  NotFoundException();
     }
     return  UsersMappers.mapModelToDto(foundUser);
+  }
+
+  async checkCredentials(loginUserDto:LoginUserDto):Promise<boolean>{
+    const foundUser = await this.usersModelRepository.findOneBy({
+      email:loginUserDto.email,
+    });
+    if(!foundUser){
+      return false;
+    }
+    return compare(loginUserDto.password,foundUser.password);
   }
 
 }

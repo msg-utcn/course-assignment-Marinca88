@@ -3,20 +3,21 @@ import {UsersModel} from "../model/users.model";
 import {UserDto} from "../dto/user.dto";
 import bcrypt from "bcrypt";
 import {UsersRole} from "../model/users-role";
+import {Logger} from "@nestjs/common";
 
 
 export class UsersMappers{
-  static mapRegisterUsertoModel(dto:RegisterUserDto):UsersModel{
-    const hashed_password = bcrypt.hash(dto.password,Math.random());
+  static mapRegisterUsertoModel(dto:RegisterUserDto,password:string):UsersModel{
     return new UsersModel({
       roles:[UsersRole.USER],
       email:dto.email,
-      name:dto.name
+      name:dto.name,
+      password:password
     })
   }
 
   static  mapModelToDto(model:UsersModel):UserDto{
-  return new UserDto({
+    return new UserDto({
       id:model.id,
       name:model.name,
       email:model.email,

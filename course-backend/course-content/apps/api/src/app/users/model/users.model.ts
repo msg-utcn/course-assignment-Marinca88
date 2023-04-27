@@ -11,6 +11,8 @@ export class UsersModel{
   email:string;
   @Column({nullable:false,enum:UsersRole,type:"enum"})
   roles:UsersRole[];
+  @Column({nullable:false})
+  password:string;
 
   constructor(values: Partial<UsersModel>) {
     if (values) {
@@ -18,6 +20,7 @@ export class UsersModel{
       this.name=values.name;
       this.roles=values.roles;
       this.email=values.email;
+      this.password=values.password;
     }
   }
 }

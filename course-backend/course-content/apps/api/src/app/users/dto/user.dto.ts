@@ -28,12 +28,13 @@ export class UserDto{
   })
   roles:UsersRole[];
 
+
   constructor(values:Partial<UserDto>) {
-     if(!values){
-       this.id=values.id,
-         this.name=values.name,
-         this.email= values.email,
-         this.roles = values.roles
-     }
+    if(values){
+      this.id=values.id;
+      this.name=values.name;
+      this.email= values.email;
+      this.roles=values.roles;
+    }
   }
 }
