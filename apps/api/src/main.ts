@@ -7,10 +7,11 @@ import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from './app/app.module';
-import {DocumentBuilder, SwaggerModule} from "@nestjs/swagger";
-import {SWAGGER_FEATURE} from "./app/question-management/question-management.config";
-import {USERS_SWGGER_FEATURE} from "./app/users/users.config";
-import {AuthConfig} from "./app/auth/auth.config";
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { SWAGGER_FEATURE } from './app/question-management/question-management.config';
+import { USERS_SWGGER_FEATURE } from './app/users/users.config';
+import { AuthConfig } from './app/auth/auth.config';
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const globalPrefix = 'api';
@@ -22,6 +23,7 @@ async function bootstrap() {
     .addTag(SWAGGER_FEATURE)
     .addTag(USERS_SWGGER_FEATURE)
     .addTag(AuthConfig.AUTH_SWAGGER_FEATURE)
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup(globalPrefix, app, document);

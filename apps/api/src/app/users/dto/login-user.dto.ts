@@ -1,22 +1,23 @@
-import {ApiProperty} from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
 
-export class LoginUserDto{
+export class LoginUserDto {
   @ApiProperty({
-    description:"the email used by the user",
-    example:"Roko_the_parrot@yahoo.com",
-    required:true
+    description: 'the email used by the user',
+    example: 'roko_the_parrot@yahoo.com',
+    required: true,
   })
-  email:string;
+  email: string;
+
   @ApiProperty({
-    description:"The passwor used for the authentication by the user",
-    example:"Roko2000_@sfsds",
-    required:true
+    description: 'The passwor used for the authentication by the user',
+    example: 'Roko2000_@sfsds',
+    required: true,
   })
-  password:string;
-  constructor(values:Partial<LoginUserDto>) {
-    if(values){
-      this.email=values.email,
-        this.password=values.password
+  password: string;
+
+  constructor(values: Partial<LoginUserDto>) {
+    if (values) {
+      (this.email = values.email), (this.password = values.password);
     }
   }
 }

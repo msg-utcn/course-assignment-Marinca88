@@ -1,6 +1,6 @@
-import {ApiProperty} from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
 
-export class UpdateQuestionDto{
+export class UpdateQuestionDto {
   @ApiProperty({
     description: 'The title of the question',
     example: 'What is a promise in JavaScript?',

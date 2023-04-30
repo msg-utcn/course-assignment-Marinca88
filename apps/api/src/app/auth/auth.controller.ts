@@ -7,12 +7,15 @@ import { LoginUserDto } from '../users/dto/login-user.dto';
 import { RegisterUserDto } from '../users/dto/register-user.dto';
 import { UserDto } from '../users/dto/user.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
-import {UsersService} from "../users/users.service";
+import { UsersService } from '../users/users.service';
 
 @ApiTags(AuthConfig.AUTH_SWAGGER_FEATURE)
 @Controller(AuthConfig.API_ROUTE)
 export class AuthController {
-  constructor(private authService: AuthService, private usersService: UsersService) {}
+  constructor(
+    private authService: AuthService,
+    private usersService: UsersService
+  ) {}
 
   @UseGuards(LocalAuthGuard)
   @Post('login')

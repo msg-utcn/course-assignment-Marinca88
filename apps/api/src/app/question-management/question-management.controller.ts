@@ -5,25 +5,31 @@ import {
   Get,
   Param,
   Patch,
-  Post, Put,
+  Post,
+  Put,
   UseGuards,
 } from '@nestjs/common';
 import { QuestionDto } from './dtos/question.dto';
-import { QuestionService } from './question.service';
+import { QuestionService } from './services/question.service';
 import { CreateQuestionDto } from './dtos/create-question.dto';
 import { UpdateQuestionDto } from './dtos/update-question.dto';
-import {ApiBearerAuth, ApiTags} from '@nestjs/swagger';
-import {API_ROUTE, SWAGGER_FEATURE} from "./question-management.config";
-import {JwtAuthGuard} from "../auth/guards/jwt-auth.guard";
-import {AnswareDto} from "./answares/dto/answare.dto";
-import {UpdateAnswareDto} from "./answares/dto/update-answare.dto";
-import {AnswareManagementService} from "./answares/service/answare-management.service";
-import {CreateAnswareDto} from "./answares/dto/create-answare.dto";
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { API_ROUTE, SWAGGER_FEATURE } from './question-management.config';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { AnswersDto } from './dtos/answers.dto';
+import { UpdateAnswerDto } from './dtos/update-answer.dto';
+import { AnswersService } from './services/answers.service';
+import { CreateAnswerDto } from './dtos/create-answer.dto';
 
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @ApiTags(SWAGGER_FEATURE)
 @Controller(API_ROUTE)
 export class QuestionManagementController {
-  constructor(private questionService: QuestionService,private answareService:AnswareManagementService) {}
+  constructor(
+    private questionService: QuestionService,
+    private answersService: AnswersService
+  ) {}
 
   @Get()
   async getAllQuestions(): Promise<QuestionDto[]> {
@@ -53,23 +59,21 @@ export class QuestionManagementController {
     return this.questionService.delete(id);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @Put('/answares/:id')
-  async updateAnsware(@Param('id') id:string,@Body() dto:UpdateAnswareDto):Promise<AnswareDto>{
-    return this.answareService.updateAnsware(id,dto);
+  @Put('/answers/:id')
+  async updateAnswer(
+    @Param('id') id: string,
+    @Body() dto: UpdateAnswerDto
+  ): Promise<AnswersDto> {
+    return this.answersService.updateAnswer(id, dto);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @Post('/answares')
-  async createAnsware(@Body() dto:CreateAnswareDto):Promise<AnswareDto>{
-    return this.answareService.createAnsware(dto);
+  @Post('/answers')
+  async createAnswer(@Body() dto: CreateAnswerDto): Promise<AnswersDto> {
+    return this.answersService.createAnswer(dto);
   }
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @Delete('/answares/:id')
-  async deleteAnsware(@Param('id')id:string):Promise<void>{
-    return  this.answareService.deleteAnsware(id);
+
+  @Delete('/answers/:id')
+  async deleteAnswer(@Param('id') id: string): Promise<void> {
+    return this.answersService.deleteAnswer(id);
   }
 }
