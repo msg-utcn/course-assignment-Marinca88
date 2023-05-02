@@ -25,12 +25,18 @@ export class AnswersDto {
     required: true,
   })
   creationDate: Date;
+  @ApiProperty({
+    description: 'The question to witch the answer responds',
+    required: true,
+  })
+  parentId: string;
 
   constructor(values: Partial<AnswersDto>) {
     if (values) {
       this.content = values.content;
       this.rating = values.rating;
       this.creationDate = values.creationDate;
+      this.parentId = values.parentId;
     }
   }
 }

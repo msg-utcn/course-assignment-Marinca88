@@ -10,17 +10,32 @@ import { CreateAnswerDto } from '../dtos/create-answer.dto';
 import { AnswersDto } from '../dtos/answers.dto';
 import { AnswerMapper } from '../mappers/answer.mapper';
 import { UpdateAnswerDto } from '../dtos/update-answer.dto';
+import { QuestionModel } from '../model/question.model';
 
 @Injectable()
 export class AnswersService {
   constructor(
     @InjectRepository(AnswerModel)
-    private answerModelRepository: Repository<AnswerModel>
+    private answerModelRepository: Repository<AnswerModel>,
+    @InjectRepository(QuestionModel)
+    private questionModelRepository: Repository<QuestionModel>
   ) {}
 
-  async createAnswer(dto: CreateAnswerDto): Promise<AnswersDto> {
-    const answerModel = AnswerMapper.mapCreateAnswerDtoToModel(dto);
+  async createAnswer(
+    dto: CreateAnswerDto,
+    questionId: string
+  ): Promise<AnswersDto> {
+    const foundQuestion = await this.questionModelRepository.findOneBy({
+      id: questionId,
+    });
+    if (!foundQuestion) {
+      throw new BadRequestException();
+    }
     try {
+      const answerModel = AnswerMapper.mapCreateAnswerDtoToModel(
+        dto,
+        foundQuestion
+      );
       const savedModel = await this.answerModelRepository.save(answerModel);
       return AnswerMapper.mapModelToDto(savedModel);
     } catch (error) {
@@ -28,9 +43,20 @@ export class AnswersService {
     }
   }
 
+  async readAllByQuestionId(questionId: string): Promise<AnswersDto[]> {
+    const foundModels: AnswerModel[] = await this.answerModelRepository.find({
+      where: { parent: { id: questionId } },
+      relations: ['parent'],
+    });
+    return foundModels.map((model: AnswerModel) =>
+      AnswerMapper.mapModelToDto(model)
+    );
+  }
+
   async updateAnswer(id: string, dto: UpdateAnswerDto): Promise<AnswersDto> {
     const foundModel = await this.answerModelRepository.findOne({
       where: { id },
+      relations: ['parent'],
     });
     if (!foundModel) {
       throw new NotFoundException();
