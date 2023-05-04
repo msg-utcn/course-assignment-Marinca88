@@ -21,4 +21,9 @@ export class CreateQuestionDto {
     required: true,
   })
   topic: QuestionTopic;
+  @ApiProperty({
+    description: 'The user who posted the question',
+    required: true,
+  })
+  useId: string;
 }

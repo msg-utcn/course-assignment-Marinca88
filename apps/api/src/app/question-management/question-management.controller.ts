@@ -59,7 +59,7 @@ export class QuestionManagementController {
     return this.questionService.delete(id);
   }
 
-  @Put('/answers/:id')
+  @Put(':questionId/answers/:id')
   async updateAnswer(
     @Param('id') id: string,
     @Body() dto: UpdateAnswerDto
@@ -67,13 +67,23 @@ export class QuestionManagementController {
     return this.answersService.updateAnswer(id, dto);
   }
 
-  @Post('/answers')
-  async createAnswer(@Body() dto: CreateAnswerDto): Promise<AnswersDto> {
-    return this.answersService.createAnswer(dto);
+  @Post(':questionId/answers')
+  async createAnswer(
+    @Body() dto: CreateAnswerDto,
+    @Param('questionId') questionId: string
+  ): Promise<AnswersDto> {
+    return this.answersService.createAnswer(dto, questionId);
   }
 
-  @Delete('/answers/:id')
+  @Delete(':questionId/answers/:id')
   async deleteAnswer(@Param('id') id: string): Promise<void> {
     return this.answersService.deleteAnswer(id);
+  }
+
+  @Get(':questionId/answer')
+  async getAnswers(
+    @Param('questionId') questionId: string
+  ): Promise<AnswersDto[]> {
+    return this.answersService.readAllByQuestionId(questionId);
   }
 }

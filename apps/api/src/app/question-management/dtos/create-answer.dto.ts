@@ -7,4 +7,14 @@ export class CreateAnswerDto {
     required: true,
   })
   content: string;
+  @ApiProperty({
+    description: 'The question to witch the answer responds',
+    required: true,
+  })
+  parentId: string;
+  @ApiProperty({
+    description: 'The user who posted the answer',
+    required: true,
+  })
+  userId: string;
 }

@@ -1,5 +1,13 @@
 import { QuestionTopic } from './question-topic';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { AnswerModel } from './answer.model';
+import { UsersModel } from '../../users/model/users.model';
 
 @Entity()
 export class QuestionModel {
@@ -17,6 +25,13 @@ export class QuestionModel {
   rating: number;
   @Column({ nullable: false })
   creationDate: string;
+  @OneToMany(() => AnswerModel, (answer) => answer.parent)
+  answers?: AnswerModel[];
+  @ManyToOne(() => UsersModel, (user) => user.questions, {
+    nullable: false,
+    cascade: true,
+  })
+  user: UsersModel;
 
   constructor(values: Partial<QuestionModel>) {
     if (values) {
@@ -27,6 +42,8 @@ export class QuestionModel {
       this.topic = values.topic;
       this.rating = values.rating;
       this.creationDate = values.creationDate;
+      this.answers = values.answers;
+      this.user = values.user;
     }
   }
 }
