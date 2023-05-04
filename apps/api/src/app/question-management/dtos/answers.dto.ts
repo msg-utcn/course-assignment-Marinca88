@@ -31,12 +31,19 @@ export class AnswersDto {
   })
   parentId: string;
 
+  @ApiProperty({
+    description: 'The user who posted the answer',
+    required: true,
+  })
+  userId: string;
+
   constructor(values: Partial<AnswersDto>) {
     if (values) {
       this.content = values.content;
       this.rating = values.rating;
       this.creationDate = values.creationDate;
       this.parentId = values.parentId;
+      this.userId = values.userId;
     }
   }
 }

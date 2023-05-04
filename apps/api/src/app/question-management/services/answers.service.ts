@@ -11,6 +11,7 @@ import { AnswersDto } from '../dtos/answers.dto';
 import { AnswerMapper } from '../mappers/answer.mapper';
 import { UpdateAnswerDto } from '../dtos/update-answer.dto';
 import { QuestionModel } from '../model/question.model';
+import { UsersModel } from '../../users/model/users.model';
 
 @Injectable()
 export class AnswersService {
@@ -18,7 +19,9 @@ export class AnswersService {
     @InjectRepository(AnswerModel)
     private answerModelRepository: Repository<AnswerModel>,
     @InjectRepository(QuestionModel)
-    private questionModelRepository: Repository<QuestionModel>
+    private questionModelRepository: Repository<QuestionModel>,
+    @InjectRepository(UsersModel)
+    private usersModelRepository: Repository<UsersModel>
   ) {}
 
   async createAnswer(
@@ -28,13 +31,17 @@ export class AnswersService {
     const foundQuestion = await this.questionModelRepository.findOneBy({
       id: questionId,
     });
-    if (!foundQuestion) {
+    const foundUser = await this.usersModelRepository.findOneBy({
+      id: dto.userId,
+    });
+    if (!foundQuestion && !foundUser) {
       throw new BadRequestException();
     }
     try {
       const answerModel = AnswerMapper.mapCreateAnswerDtoToModel(
         dto,
-        foundQuestion
+        foundQuestion,
+        foundUser
       );
       const savedModel = await this.answerModelRepository.save(answerModel);
       return AnswerMapper.mapModelToDto(savedModel);
@@ -46,7 +53,7 @@ export class AnswersService {
   async readAllByQuestionId(questionId: string): Promise<AnswersDto[]> {
     const foundModels: AnswerModel[] = await this.answerModelRepository.find({
       where: { parent: { id: questionId } },
-      relations: ['parent'],
+      relations: ['parent', 'user'],
     });
     return foundModels.map((model: AnswerModel) =>
       AnswerMapper.mapModelToDto(model)
@@ -56,7 +63,7 @@ export class AnswersService {
   async updateAnswer(id: string, dto: UpdateAnswerDto): Promise<AnswersDto> {
     const foundModel = await this.answerModelRepository.findOne({
       where: { id },
-      relations: ['parent'],
+      relations: ['parent', 'user'],
     });
     if (!foundModel) {
       throw new NotFoundException();

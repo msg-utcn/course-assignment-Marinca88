@@ -17,6 +17,8 @@ export class UsersModel {
   password: string;
   @OneToMany(() => QuestionModel, (question) => question.user)
   questions?: QuestionModel[];
+  @OneToMany(() => AnswerModel, (answer) => answer.user)
+  answers?: AnswerModel[];
 
   constructor(values: Partial<UsersModel>) {
     if (values) {
@@ -26,6 +28,7 @@ export class UsersModel {
       this.email = values.email;
       this.password = values.password;
       this.questions = values.questions;
+      this.answers = values.answers;
     }
   }
 }

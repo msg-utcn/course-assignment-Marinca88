@@ -12,4 +12,9 @@ export class CreateAnswerDto {
     required: true,
   })
   parentId: string;
+  @ApiProperty({
+    description: 'The user who posted the answer',
+    required: true,
+  })
+  userId: string;
 }
